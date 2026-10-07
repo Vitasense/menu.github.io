@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Домашнее меню</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Marck+Script&family=Manrope:wght@500;600;700&display=swap">
+<style id="sty">
+/* Layout: white top bar, a deep-green banner framed in lime with script lettering, a sticky green category bar, then centered course sections with lime underlines */
+:root {
+  --green: #2f5124;
+  --green-deep: #24401b;
+  --lime: #b5c64f;
+  --lime-soft: #e9efc8;
+  --paper: #ffffff;
+  --page: #f7f8f2;
+  --ink: #23301c;
+  --muted: #6f7867;
+  --rule: #dfe4d2;
+  --danger: #a8322b;
+  --f-serif: "Old Standard TT", "Times New Roman", serif;
+  --f-script: "Marck Script", "Segoe Script", cursive;
+  --f-ui: "Manrope", system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: var(--f-serif);
+  font-size: 17px;
+}
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 16px; }
+
+/* top bar */
+.topbar { background: var(--paper); box-shadow: 0 2px 12px rgba(36, 64, 27, .08); }
+.topbar .wrap {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px 24px; padding-block: 16px;
+}
+.brand { font-family: var(--f-serif); font-weight: 700; font-size: 20px; letter-spacing: .14em; text-transform: uppercase; line-height: 1.15; }
+.brand small { display: block; font-family: var(--f-ui); font-weight: 600; font-size: 10px; letter-spacing: .3em; color: var(--muted); }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+.btn {
+  font-family: var(--f-serif); font-size: 16px; color: var(--ink);
+  background: transparent; border: 1px solid var(--rule); border-radius: 10px;
+  padding: 8px 16px; cursor: pointer; transition: background .15s, border-color .15s, color .15s;
+}
+.btn:hover { border-color: var(--lime); }
+.btn.lime { background: var(--lime); border-color: var(--lime); color: var(--green-deep); }
+.btn.lime:hover { background: #a6b83f; }
+.btn.on { background: var(--lime-soft); border-color: var(--lime); }
+.btn[disabled] { opacity: .45; cursor: default; }
+.btn:focus-visible, input:focus-visible, .cat:focus-visible, .icon-btn:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; }
+
+.status { font-family: var(--f-ui); font-size: 13px; color: var(--muted); min-height: 18px; text-align: right; padding-top: 6px; }
+.status.dirty { color: #7d8a2a; }
+.status.err { color: var(--danger); }
+.status.ok { color: var(--green); }
+
+/* banner */
+.banner {
+  margin-top: 22px; background: var(--green); color: #fff;
+  border: 8px solid var(--lime); outline: 6px solid var(--green); outline-offset: -14px;
+  padding: 40px clamp(20px, 6vw, 72px) 36px; position: relative; overflow: hidden;
+  text-align: center;
+}
+.banner .sprig { position: absolute; width: 150px; height: auto; color: var(--lime); opacity: .9; }
+.banner .sprig.l { left: -8px; bottom: -6px; }
+.banner .sprig.r { right: -8px; top: -6px; transform: rotate(180deg); }
+.banner h1 { margin: 0; font-weight: 400; font-size: clamp(30px, 5vw, 46px); line-height: 1.15; text-wrap: balance; }
+.banner h1 .script { font-family: var(--f-script); color: var(--lime); font-size: 1.2em; }
+.banner .underline { width: min(340px, 70%); height: 1px; background: var(--lime); margin: 10px auto 22px; }
+.banner-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; position: relative; z-index: 1; }
+.pick { display: grid; gap: 6px; align-content: start; justify-items: center; }
+.pick .label { font-size: 21px; }
+.pick .dish { font-family: var(--f-script); color: var(--lime); font-size: clamp(26px, 3.6vw, 34px); line-height: 1.15; min-height: 1.2em; text-wrap: balance; }
+.pick .side { font-style: italic; color: #dfe8c4; font-size: 16px; min-height: 1.2em; }
+.pick .btn { color: #fff; border-color: rgba(181, 198, 79, .6); margin-top: 6px; font-size: 15px; }
+.pick .btn:hover { background: rgba(181, 198, 79, .15); border-color: var(--lime); }
+
+/* category bar */
+.cats { position: sticky; top: 0; z-index: 5; background: var(--green-deep); }
+.cats .wrap { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 8px; padding-block: 6px; }
+.cat {
+  font-family: var(--f-serif); font-size: 18px; color: #fff; background: none; border: 0;
+  padding: 10px 18px; cursor: pointer; border-bottom: 2px solid transparent;
+}
+.cat:hover { border-bottom-color: var(--lime); color: var(--lime-soft); }
+
+/* courses */
+main.wrap { padding-block: 12px 48px; }
+.course { background: var(--paper); margin-top: 28px; padding: 36px clamp(18px, 5vw, 56px) 32px; scroll-margin-top: 70px; }
+.course-head { text-align: center; margin-bottom: 26px; display: grid; justify-items: center; gap: 4px; }
+.course-head h2 { margin: 0; font-weight: 400; font-size: clamp(30px, 4.4vw, 40px); }
+.course-head .bar { width: 64px; height: 4px; background: var(--lime); border-radius: 2px; margin-top: 6px; }
+.course-head .count { font-family: var(--f-script); color: #7d8a2a; font-size: 22px; }
+
+ul.dishes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 44px; }
+li.dish { display: grid; grid-template-columns: 1fr auto; align-items: baseline; gap: 10px; padding-block: 10px; border-bottom: 1px solid var(--rule); min-width: 0; }
+.dish-text { min-width: 0; display: grid; gap: 2px; }
+.dish-name { font-size: 19px; }
+.dish-note { font-style: italic; color: var(--muted); font-size: 15px; }
+.leaf { color: var(--lime); width: 16px; height: 16px; flex: none; transform: translateY(2px); }
+.dish-row { display: flex; gap: 10px; align-items: baseline; }
+.dish-tools { display: none; gap: 2px; font-family: var(--f-ui); }
+.editing .dish-tools { display: inline-flex; }
+.icon-btn { font-family: var(--f-ui); font-size: 12px; font-weight: 600; border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 6px 8px; border-radius: 6px; }
+.icon-btn:hover { background: var(--lime-soft); color: var(--ink); }
+.icon-btn.del:hover { color: var(--danger); }
+.icon-btn[disabled] { opacity: .35; cursor: default; }
+
+form.dish-form { display: none; grid-template-columns: 1fr 1fr auto; gap: 8px; margin-top: 20px; font-family: var(--f-ui); }
+.editing form.dish-form { display: grid; }
+li.dish.edit-row { grid-template-columns: 1fr; }
+li.dish form.dish-form { display: grid; margin: 0; }
+input[type="text"] { font-family: var(--f-ui); font-size: 14px; color: var(--ink); background: #fff; border: 1px solid var(--rule); border-radius: 10px; padding: 9px 12px; width: 100%; min-width: 0; }
+input::placeholder { color: var(--muted); }
+.empty { font-style: italic; color: var(--muted); padding-block: 8px; grid-column: 1 / -1; text-align: center; }
+
+footer.foot { text-align: center; padding-block: 8px 40px; }
+footer .script { font-family: var(--f-script); color: var(--green); font-size: 30px; }
+
+@media (max-width: 720px) {
+  ul.dishes { grid-template-columns: 1fr; }
+  .banner-row { grid-template-columns: 1fr; gap: 28px; }
+  .banner .sprig { width: 100px; opacity: .55; }
+  .status { text-align: left; }
+}
+@media (max-width: 480px) {
+  form.dish-form { grid-template-columns: 1fr; }
+  li.dish { grid-template-columns: 1fr; }
+  .cat { padding: 8px 10px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="root"><p style="text-align:center;padding:40px 16px;font-style:italic">Меню загружается…</p></div>
+
+<script type="application/json" id="menu-data">{"savedAt":0,"courses":[{"id":"breakfast","title":"Завтраки","nav":"Завтраки","dishes":[{"name":"Яичница с беконом","note":""},{"name":"Омлет","note":"с помидорами и сыром"},{"name":"Тост","note":"с авокадо / рыбой / творожным сыром"},{"name":"Сырники","note":""},{"name":"Вафли","note":""},{"name":"Блины","note":""},{"name":"Йогурт","note":"с мюсли и фруктами"},{"name":"Каша","note":"с фруктами / орехами"},{"name":"Творог","note":"с ягодами и мёдом"}]},{"id":"mains","title":"Обед и ужин","nav":"Горячие блюда","dishes":[{"name":"Суп","note":"борщ, щи, солянка"},{"name":"Жаркое из говядины","note":""},{"name":"Пицца","note":""},{"name":"Роллы","note":""},{"name":"Шаурма","note":""},{"name":"Хот-дог","note":""},{"name":"Паста","note":"с грибами / креветками"},{"name":"Макароны по-флотски","note":""},{"name":"Запечённая куриная грудка","note":""},{"name":"Рыба","note":""},{"name":"Куриные котлеты","note":""},{"name":"Запечённая индейка","note":"с травами"},{"name":"Тефтели","note":"в томатном соусе"},{"name":"Запечённая картошка","note":"с курицей и овощами"},{"name":"Овощное рагу","note":"кабачки, баклажаны, перец"}]},{"id":"sides","title":"Гарниры и салаты","nav":"Гарниры и салаты","dishes":[{"name":"Гречка","note":""},{"name":"Рис","note":""},{"name":"Булгур","note":""},{"name":"Картофельное пюре","note":""},{"name":"Картофель запечённый","note":""},{"name":"Макароны","note":""},{"name":"Салат из свежих овощей","note":""},{"name":"Салат из капусты","note":""},{"name":"Солёные или маринованные огурцы","note":""},{"name":"Овощное рагу","note":"кабачки, баклажаны, перец"}]}]}</script>
+
+<script id="app">
+(function () {
+  var LS_KEY = "home-menu-v5";
+  var embedded = JSON.parse(document.getElementById("menu-data").textContent);
+  var state = embedded;
+  try {
+    var draft = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (draft && draft.savedAt > (embedded.savedAt || 0)) state = draft;
+  } catch (e) {}
+
+  var editing = false, dirty = false, editKey = null;
+  var downloadsNs = null;
+  var statusText = "", statusKind = "";
+  var picks = { breakfast: null, main: null };
+  var root = document.getElementById("root");
+
+  var SPRIG = '<svg class="sprig %C" viewBox="0 0 160 160" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">' +
+    '<path d="M10 150 C 50 120, 80 90, 150 20"/>' +
+    '<path d="M40 126 C 30 104, 38 92, 52 86 C 58 100, 54 116, 40 126 Z"/><path d="M40 126 L 50 92"/>' +
+    '<path d="M44 124 C 64 128, 76 120, 82 106 C 68 100, 52 108, 44 124 Z"/><path d="M44 124 L 76 108"/>' +
+    '<path d="M72 98 C 62 76, 70 64, 86 58 C 92 74, 88 88, 72 98 Z"/><path d="M72 98 L 84 64"/>' +
+    '<path d="M76 96 C 96 100, 110 92, 116 78 C 100 72, 84 80, 76 96 Z"/><path d="M76 96 L 110 80"/>' +
+    '<path d="M104 68 C 96 48, 104 38, 118 32 C 124 48, 120 60, 104 68 Z"/><path d="M104 68 L 116 38"/>' +
+    '<path d="M108 66 C 126 68, 138 60, 142 48 C 128 44, 114 50, 108 66 Z"/><path d="M108 66 L 138 50"/>' +
+    '<circle cx="150" cy="20" r="3"/></svg>';
+  var LEAF = '<svg class="leaf" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M2 14 C 2 6, 7 2, 14 2 C 14 9, 10 14, 2 14 Z"/><path d="M2 14 L 10 6"/></svg>';
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function plural(n) {
+    var m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return n + " блюдо";
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return n + " блюда";
+    return n + " блюд";
+  }
+  function course(id) { return state.courses.find(function (c) { return c.id === id; }); }
+  function rand(a) { return a[Math.floor(Math.random() * a.length)]; }
+  function full(d) { return d.note ? d.name + " " + d.note : d.name; }
+  function markDirty() { dirty = true; statusText = "Есть несохранённые изменения"; statusKind = "dirty"; }
+  function setStatus(t, k) { statusText = t; statusKind = k || ""; render(); }
+
+  function dishForm(cid, idx, d) {
+    var key = cid + "-" + (idx == null ? "new" : idx);
+    return '<form class="dish-form" data-course="' + cid + '"' + (idx != null ? ' data-idx="' + idx + '"' : "") + '>' +
+      '<input type="text" id="name-' + key + '" name="name" placeholder="Название блюда" value="' + esc(d ? d.name : "") + '" required>' +
+      '<input type="text" id="note-' + key + '" name="note" placeholder="Подача, например «со сметаной»" value="' + esc(d ? d.note : "") + '">' +
+      '<button class="btn lime" type="submit">' + (idx != null ? "Готово" : "Добавить") + '</button></form>';
+  }
+
+  function pickBlock(kind, label) {
+    var p = picks[kind];
+    return '<div class="pick"><div class="label">' + label + '</div>' +
+      '<div class="dish">' + (p ? esc(p.dish) : "…") + '</div>' +
+      '<div class="side">' + (p && p.side ? esc(p.side) : "&nbsp;") + '</div>' +
+      '<button class="btn" type="button" data-act="pick-' + kind + '">' + (p ? "Другой вариант" : "Выбрать блюдо") + '</button></div>';
+  }
+
+  function render() {
+    var total = state.courses.reduce(function (a, c) { return a + c.dishes.length; }, 0);
+    var h = '';
+    h += '<header class="topbar"><div class="wrap">' +
+      '<div class="brand">Домашнее меню<small>' + plural(total) + ' в карте</small></div>' +
+      '<div><div class="actions">' +
+      '<button class="btn' + (editing ? ' on' : '') + '" data-act="toggle-edit" type="button">' + (editing ? "Закончить правку" : "Редактировать") + '</button>' +
+      '<button class="btn lime" data-act="save" type="button"' + (dirty ? '' : ' disabled') + '>Сохранить</button>' +
+      (downloadsNs ? '<button class="btn" data-act="download" type="button">Скачать .md</button>' : '') +
+      '</div><div class="status ' + statusKind + '" role="status">' + esc(statusText) + '</div></div>' +
+      '</div></header>';
+
+    h += '<div class="wrap"><section class="banner">' + SPRIG.replace("%C", "l") + SPRIG.replace("%C", "r") +
+      '<h1><span class="script">Что</span> приготовим <span class="script">сегодня?</span></h1>' +
+      '<div class="underline"></div><div class="banner-row">' +
+      pickBlock("breakfast", "на завтрак") + pickBlock("main", "на обед или ужин") +
+      '</div></section></div>';
+
+    h += '<nav class="cats" aria-label="Разделы меню"><div class="wrap">';
+    state.courses.forEach(function (c) { h += '<button class="cat" type="button" data-act="go" data-course="' + c.id + '">' + esc(c.nav || c.title) + '</button>'; });
+    h += '</div></nav>';
+
+    h += '<main class="wrap' + (editing ? ' editing' : '') + '">';
+    state.courses.forEach(function (c) {
+      h += '<section class="course" id="sec-' + c.id + '"><div class="course-head"><h2>' + esc(c.title) + '</h2><div class="bar"></div>' +
+        '<div class="count">' + plural(c.dishes.length) + '</div></div><ul class="dishes">';
+      if (!c.dishes.length) h += '<li class="empty">Пока пусто. Нажмите «Редактировать», чтобы добавить блюдо.</li>';
+      c.dishes.forEach(function (d, i) {
+        if (editKey === c.id + "-" + i) { h += '<li class="dish edit-row">' + dishForm(c.id, i, d) + '</li>'; return; }
+        h += '<li class="dish"><div class="dish-row">' + LEAF + '<div class="dish-text"><span class="dish-name">' + esc(d.name) + '</span>' +
+          (d.note ? '<span class="dish-note">' + esc(d.note) + '</span>' : '') + '</div></div>' +
+          '<span class="dish-tools">' +
+          '<button class="icon-btn" type="button" data-act="up" data-course="' + c.id + '" data-idx="' + i + '" aria-label="Переместить выше"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+          '<button class="icon-btn" type="button" data-act="edit" data-course="' + c.id + '" data-idx="' + i + '">Изменить</button>' +
+          '<button class="icon-btn del" type="button" data-act="del" data-course="' + c.id + '" data-idx="' + i + '">Убрать</button>' +
+          '</span></li>';
+      });
+      h += '</ul>' + dishForm(c.id, null, null) + '</section>';
+    });
+    h += '</main><footer class="foot"><span class="script">Приятного аппетита!</span></footer>';
+    root.innerHTML = h;
+  }
+
+  root.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-act]");
+    if (!b || b.disabled) return;
+    var act = b.dataset.act, c = b.dataset.course ? course(b.dataset.course) : null, i = +b.dataset.idx;
+    if (act === "toggle-edit") { editing = !editing; editKey = null; render(); }
+    else if (act === "go") { var s = document.getElementById("sec-" + c.id); if (s) s.scrollIntoView(); }
+    else if (act === "edit") { editKey = c.id + "-" + i; render(); var el = document.getElementById("name-" + editKey); if (el) el.focus(); }
+    else if (act === "del") { var r = c.dishes.splice(i, 1)[0]; markDirty(); statusText = "Убрано: " + r.name + ". Не забудьте сохранить."; render(); }
+    else if (act === "up" && i > 0) { var t = c.dishes[i - 1]; c.dishes[i - 1] = c.dishes[i]; c.dishes[i] = t; markDirty(); render(); }
+    else if (act === "pick-breakfast") {
+      var bf = course("breakfast").dishes;
+      picks.breakfast = bf.length ? { dish: full(rand(bf)) } : null; render();
+    }
+    else if (act === "pick-main") {
+      var m = course("mains").dishes, sd = course("sides").dishes;
+      picks.main = m.length ? { dish: full(rand(m)), side: sd.length ? "гарнир: " + full(rand(sd)).toLowerCase() : "" } : null; render();
+    }
+    else if (act === "save") save();
+    else if (act === "download") download();
+  });
+
+  root.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var f = e.target, c = course(f.dataset.course);
+    var name = f.elements.name.value.trim(), note = f.elements.note.value.trim();
+    if (!name) return;
+    if (f.dataset.idx != null) { c.dishes[+f.dataset.idx] = { name: name, note: note }; editKey = null; }
+    else c.dishes.push({ name: name, note: note });
+    markDirty(); render();
+    if (f.dataset.idx == null) { var n = document.getElementById("name-" + c.id + "-new"); if (n) n.focus(); }
+  });
+
+  function save() {
+    if (!dirty) return;
+    var snap = JSON.parse(JSON.stringify(state)); snap.savedAt = Date.now();
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(snap));
+      state = snap; dirty = false; setStatus("Сохранено в этом браузере", "ok");
+    } catch (e) {
+      setStatus("Сохранить не удалось: браузер не даёт доступ к хранилищу", "err");
+    }
+  }
+
+  function toMarkdown() {
+    var md = "# Домашнее меню\n";
+    state.courses.forEach(function (c) {
+      md += "\n## " + c.title + "\n\n";
+      c.dishes.forEach(function (d) { md += "- " + d.name + (d.note ? " (" + d.note + ")" : "") + "\n"; });
+    });
+    return md;
+  }
+  function download() {
+    if (!downloadsNs) return;
+    downloadsNs.save({ filename: "menu.md", data: toMarkdown() }).then(function () { setStatus("Файл menu.md сохранён", "ok"); }, function () {});
+  }
+
+  window.addEventListener("beforeunload", function (e) { if (dirty) { e.preventDefault(); e.returnValue = ""; } });
+
+  render();
+  if (window.claude && window.claude.use) {
+    window.claude.use("downloads").then(function (ns) { downloadsNs = ns; render(); }).catch(function () {});
+  }
+})();
+</script>
+</body>
+</html>
